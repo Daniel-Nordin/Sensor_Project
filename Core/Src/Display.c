@@ -20,7 +20,7 @@ void update_display(uint8_t data, uint8_t rs, uint8_t rw){
 	transmit_data[2] = (data >> 4) & 0x0F;
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-	HAL_SPI_Transmit(&hspi2, &transmit_data, 3, HAL_MAX_DELAY);
+	HAL_SPI_Transmit(&hspi2, transmit_data, 3, HAL_MAX_DELAY);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 }
 
@@ -33,6 +33,7 @@ void BG_green(int t){
 }
 
 void Display_init(){
+	HAL_Delay(10);
 	HAL_GPIO_WritePin(Disp_Reset_GPIO_Port, Disp_Reset_Pin, GPIO_PIN_RESET);
 	HAL_Delay(500);
 	HAL_GPIO_WritePin(Disp_Reset_GPIO_Port, Disp_Reset_Pin, GPIO_PIN_SET);
@@ -46,11 +47,11 @@ void Display_init(){
 	uint8_t follower_ctrl[3] = { 0x1f, 0x0e, 0x06 };
 	uint8_t on_off[3] = { 0x1f, 0x0f, 0x0 };
 
-	HAL_SPI_Transmit(&hspi2, &func_set, 3, 100);
-	HAL_SPI_Transmit(&hspi2, &clear_disp, 3, 100);
-	HAL_SPI_Transmit(&hspi2, &internal_div, 3, 100);
-	HAL_SPI_Transmit(&hspi2, &contrast_set, 3, 100);
-	HAL_SPI_Transmit(&hspi2, &power_icon_power, 3, 100);
-	HAL_SPI_Transmit(&hspi2, &follower_ctrl, 3, 100);
-	HAL_SPI_Transmit(&hspi2, &on_off, 3, 100);
+	HAL_SPI_Transmit(&hspi2, func_set, 3, 100);
+	HAL_SPI_Transmit(&hspi2, clear_disp, 3, 100);
+	HAL_SPI_Transmit(&hspi2, internal_div, 3, 100);
+	HAL_SPI_Transmit(&hspi2, contrast_set, 3, 100);
+	HAL_SPI_Transmit(&hspi2, power_icon_power, 3, 100);
+	HAL_SPI_Transmit(&hspi2, follower_ctrl, 3, 100);
+	HAL_SPI_Transmit(&hspi2, on_off, 3, 100);
 }
