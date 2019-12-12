@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -92,10 +93,13 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI2_Init();
   MX_TIM3_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   Display_init();
   uint16_t pwm_value = 0;
   uint16_t step = 0;
+  uint32_t potVal = 0;
+
   //pwm_bright(30);
   //test_brightness();
   //test_disp();
@@ -106,6 +110,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
 	  if (pwm_value > 100) {
 		  pwm_value=0;
@@ -113,6 +118,10 @@ int main(void)
 	  pwm_value++;
 	  HAL_Delay(100);
 	  pwm_bright(pwm_value);
+      HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, 100);
+	  potVal = HAL_ADC_GetValue(&hadc1);
+	  asm("nop");
   }
   /* USER CODE END 3 */
 }
