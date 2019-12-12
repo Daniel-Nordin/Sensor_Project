@@ -94,6 +94,7 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM3_Init();
   MX_ADC1_Init();
+  MX_UART5_Init();
   /* USER CODE BEGIN 2 */
   Display_init();
   uint16_t pwm_value = 0;
@@ -167,8 +168,10 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_ADC;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_UART5
+                              |RCC_PERIPHCLK_ADC;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.Uart5ClockSelection = RCC_UART5CLKSOURCE_PCLK1;
   PeriphClkInit.AdcClockSelection = RCC_ADCCLKSOURCE_PLLSAI1;
   PeriphClkInit.PLLSAI1.PLLSAI1Source = RCC_PLLSOURCE_HSI;
   PeriphClkInit.PLLSAI1.PLLSAI1M = 1;
@@ -190,6 +193,34 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void set_time() {
+	RTC_TimeTypeDef sTime;
+	RTC_DateTypeDef sDate;
+
+	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+
+	HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+
+}
+
+void get_time() {
+	RTC_TimeTypeDef gTime;
+	RTC_DateTypeDef gDate;
+
+	HAL_RTC_GetTime(&hrtc, &gTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &gDate, RTC_FORMAT_BIN);
+
+}
+
+int receiveUART() {
+	int uart;
+
+	while (HAL_UART_Receive(&huart5, &uart, 1, 1000) != HAL_OK) {
+		return uart;
+	}
+}
 
 /* USER CODE END 4 */
 
