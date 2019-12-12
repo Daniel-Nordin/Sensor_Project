@@ -1,3 +1,0 @@
-Display.c:10:6:update_display	24	static
-Display.c:27:6:pwm_bright	16	static
-Display.c:36:6:Display_init	40	static

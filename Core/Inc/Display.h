@@ -18,4 +18,4 @@
 void update_display(uint8_t data, uint8_t rs, uint8_t rw);
 void BG_green(int t);
 void Display_init();
-void pwm_bright(int d);
+void pwm_bright(uint16_t);

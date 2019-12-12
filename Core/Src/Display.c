@@ -24,12 +24,16 @@ void update_display(uint8_t data, uint8_t rs, uint8_t rw){
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 }
 
-void pwm_bright(int d){
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+void pwm_bright(uint16_t brightness){
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
+	TIM_OC_InitTypeDef sConfigOC;
 
-	htim2.Instance->CCR1 = 30;
-	htim2.Instance->CCR1 = 10;
+    sConfigOC.OCMode = TIM_OCMODE_PWM1;
+    sConfigOC.Pulse = brightness;
+    sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+    sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+    HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
 }
 

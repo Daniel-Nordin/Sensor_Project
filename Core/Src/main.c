@@ -69,7 +69,6 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
   
 
@@ -92,11 +91,14 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_SPI2_Init();
-  MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   Display_init();
-  test_brightness();
-  test_disp();
+  uint16_t pwm_value = 0;
+  uint16_t step = 0;
+  //pwm_bright(30);
+  //test_brightness();
+  //test_disp();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,8 +106,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
+	  if (pwm_value > 100) {
+		  pwm_value=0;
+	  }
+	  pwm_value++;
+	  HAL_Delay(100);
+	  pwm_bright(pwm_value);
   }
   /* USER CODE END 3 */
 }
@@ -175,7 +182,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-
+	int fucked = 1;
   /* USER CODE END Error_Handler_Debug */
 }
 

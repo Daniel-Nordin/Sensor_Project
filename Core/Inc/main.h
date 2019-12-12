@@ -72,10 +72,6 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define Disp_Reset_Pin GPIO_PIN_15
 #define Disp_Reset_GPIO_Port GPIOA
-#define Disp_Green_Pin GPIO_PIN_10
-#define Disp_Green_GPIO_Port GPIOC
-#define Disp_White_Pin GPIO_PIN_11
-#define Disp_White_GPIO_Port GPIOC
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
