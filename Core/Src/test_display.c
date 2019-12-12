@@ -8,15 +8,16 @@
 #include <test_display.h>
 
 void test_disp(){
-	Display_init();
-	while(1){
-		update_display('A', 1, 0);
-		HAL_Delay(1000);
-		update_display('B', 1, 1);
-		HAL_Delay(1000);
 
-		BG_green(500);
-	}
+	update_display('2', 1, 0);
+	update_display('3', 1, 0);
+	update_display(':', 1, 0);
+	update_display('5', 1, 0);
+	update_display('6', 1, 0);
+
 }
 
+void test_brightness(){
 
+	pwm_bright(30);
+}

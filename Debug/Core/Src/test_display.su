@@ -1,1 +1,2 @@
 test_display.c:10:6:test_disp	8	static
+test_display.c:20:6:test_brightness	8	static

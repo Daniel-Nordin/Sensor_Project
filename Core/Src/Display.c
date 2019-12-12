@@ -24,12 +24,13 @@ void update_display(uint8_t data, uint8_t rs, uint8_t rw){
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 }
 
-void BG_green(int t){
-	//HAL_TIM_PWM_Start();
-
+void pwm_bright(int d){
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
-	HAL_Delay(t);
-	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+
+	htim2.Instance->CCR1 = 30;
+	htim2.Instance->CCR1 = 10;
+
 }
 
 void Display_init(){

@@ -13,3 +13,6 @@
 #endif /* INC_TEST_DISPLAY_H_ */
 
 #include <Display.h>
+
+void test_disp();
+void test_brightness();
