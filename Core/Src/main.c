@@ -57,6 +57,15 @@
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
+RTC_TimeTypeDef get_time() {
+	RTC_TimeTypeDef gTime;
+	RTC_DateTypeDef gDate;
+
+	HAL_RTC_GetTime(&hrtc, &gTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &gDate, RTC_FORMAT_BIN);
+
+	return gTime;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -99,13 +108,28 @@ int main(void)
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
   Display_init();
-  uint16_t pwm_value = 0;
-  uint16_t step = 0;
   uint32_t potVal = 0;
+  uint8_t temp;
+  char digit1;
+  char digit2;
+  RTC_TimeTypeDef real_time;
 
-  //pwm_bright(30);
-  //test_brightness();
-  //test_disp();
+
+  set_time();
+  real_time = get_time();
+  temp = real_time.Hours;
+  update_display((char)((temp / 10) + 48), 1, 0);
+  update_display((char)((temp % 10) + 48), 1, 0);
+  update_display(':', 1, 0);
+  temp = real_time.Minutes;
+  update_display((char)((temp / 10) + 48), 1, 0);
+  update_display((char)((temp % 10) + 48), 1, 0);
+  update_display(':', 1, 0);
+  temp = real_time.Seconds;
+  update_display((char)((temp / 10) + 48), 1, 0);
+  update_display((char)((temp % 10) + 48), 1, 0);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -115,18 +139,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	 /* if (pwm_value > 100) {
-		  pwm_value=0;
-	  }
-	  pwm_value++;
-	  HAL_Delay(100);
-	  pwm_bright(pwm_value);*/
 	  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
       HAL_ADC_Start(&hadc1);
 	  HAL_ADC_PollForConversion(&hadc1, 100);
 	  potVal = HAL_ADC_GetValue(&hadc1);
 	  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, potVal/41);
-	  asm("nop");
+
+
   }
   /* USER CODE END 3 */
 }
@@ -204,19 +223,15 @@ void set_time() {
 
 	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
 	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+	sTime.Hours = 12;
+	sTime.Minutes = 34;
+	sTime.Seconds = 56;
 
 	HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
 }
 
-void get_time() {
-	RTC_TimeTypeDef gTime;
-	RTC_DateTypeDef gDate;
 
-	HAL_RTC_GetTime(&hrtc, &gTime, RTC_FORMAT_BIN);
-	HAL_RTC_GetDate(&hrtc, &gDate, RTC_FORMAT_BIN);
-
-}
 
 int receiveUART() {
 	int uart;
