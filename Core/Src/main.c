@@ -66,6 +66,10 @@ RTC_TimeTypeDef get_time() {
 
 	return gTime;
 }
+
+
+
+uint8_t receiveUART();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -110,8 +114,6 @@ int main(void)
   Display_init();
   uint32_t potVal = 0;
   uint8_t temp;
-  char digit1;
-  char digit2;
   RTC_TimeTypeDef real_time;
 
 
@@ -129,6 +131,22 @@ int main(void)
   update_display((char)((temp / 10) + 48), 1, 0);
   update_display((char)((temp % 10) + 48), 1, 0);
 
+  HAL_Delay(2000);
+  update_display(1, 0, 0);
+
+
+  real_time = get_time();
+    temp = real_time.Hours;
+    update_display((char)((temp / 10) + 48), 1, 0);
+    update_display((char)((temp % 10) + 48), 1, 0);
+    update_display(':', 1, 0);
+    temp = real_time.Minutes;
+    update_display((char)((temp / 10) + 48), 1, 0);
+    update_display((char)((temp % 10) + 48), 1, 0);
+    update_display(':', 1, 0);
+    temp = real_time.Seconds;
+    update_display((char)((temp / 10) + 48), 1, 0);
+    update_display((char)((temp % 10) + 48), 1, 0);
 
   /* USER CODE END 2 */
 
@@ -145,7 +163,22 @@ int main(void)
 	  potVal = HAL_ADC_GetValue(&hadc1);
 	  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, potVal/41);
 
+	  update_display(1, 0, 0);
 
+
+	    real_time = get_time();
+	      temp = real_time.Hours;
+	      update_display((char)((temp / 10) + 48), 1, 0);
+	      update_display((char)((temp % 10) + 48), 1, 0);
+	      update_display(':', 1, 0);
+	      temp = real_time.Minutes;
+	      update_display((char)((temp / 10) + 48), 1, 0);
+	      update_display((char)((temp % 10) + 48), 1, 0);
+	      update_display(':', 1, 0);
+	      temp = real_time.Seconds;
+	      update_display((char)((temp / 10) + 48), 1, 0);
+	      update_display((char)((temp % 10) + 48), 1, 0);
+	      HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
@@ -223,9 +256,10 @@ void set_time() {
 
 	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
 	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-	sTime.Hours = 12;
-	sTime.Minutes = 34;
-	sTime.Seconds = 56;
+	sTime.Hours = receiveUART();
+	sTime.Minutes = receiveUART();
+	sTime.Seconds = receiveUART();
+
 
 	HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
@@ -233,12 +267,16 @@ void set_time() {
 
 
 
-int receiveUART() {
-	int uart;
+uint8_t receiveUART() {
+	uint8_t uart = 0;
 
-	while (HAL_UART_Receive(&huart5, &uart, 1, 1000) != HAL_OK) {
+	if (HAL_UART_Receive(&huart5, &uart, 1, HAL_MAX_DELAY) != HAL_OK) {
+		Error_Handler();
+	}
+	else{
 		return uart;
 	}
+
 }
 
 /* USER CODE END 4 */
