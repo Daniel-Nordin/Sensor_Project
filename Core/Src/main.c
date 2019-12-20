@@ -57,19 +57,6 @@
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
-RTC_TimeTypeDef get_time() {
-	RTC_TimeTypeDef gTime;
-	RTC_DateTypeDef gDate;
-
-	HAL_RTC_GetTime(&hrtc, &gTime, RTC_FORMAT_BIN);
-	HAL_RTC_GetDate(&hrtc, &gDate, RTC_FORMAT_BIN);
-
-	return gTime;
-}
-
-
-
-uint8_t receiveUART();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -112,73 +99,23 @@ int main(void)
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
   Display_init();
-  uint32_t potVal = 0;
-  uint8_t temp;
-  RTC_TimeTypeDef real_time;
-
-
-  set_time();
-  real_time = get_time();
-  temp = real_time.Hours;
-  update_display((char)((temp / 10) + 48), 1, 0);
-  update_display((char)((temp % 10) + 48), 1, 0);
-  update_display(':', 1, 0);
-  temp = real_time.Minutes;
-  update_display((char)((temp / 10) + 48), 1, 0);
-  update_display((char)((temp % 10) + 48), 1, 0);
-  update_display(':', 1, 0);
-  temp = real_time.Seconds;
-  update_display((char)((temp / 10) + 48), 1, 0);
-  update_display((char)((temp % 10) + 48), 1, 0);
-
-  HAL_Delay(2000);
-  update_display(1, 0, 0);
-
-
-  real_time = get_time();
-    temp = real_time.Hours;
-    update_display((char)((temp / 10) + 48), 1, 0);
-    update_display((char)((temp % 10) + 48), 1, 0);
-    update_display(':', 1, 0);
-    temp = real_time.Minutes;
-    update_display((char)((temp / 10) + 48), 1, 0);
-    update_display((char)((temp % 10) + 48), 1, 0);
-    update_display(':', 1, 0);
-    temp = real_time.Seconds;
-    update_display((char)((temp / 10) + 48), 1, 0);
-    update_display((char)((temp % 10) + 48), 1, 0);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /**
+   * @breif After all initialization is done, main polls the time to be updated and the analog setting the pwm
+   * @param none
+   * @retval none
+   */
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-      HAL_ADC_Start(&hadc1);
-	  HAL_ADC_PollForConversion(&hadc1, 100);
-	  potVal = HAL_ADC_GetValue(&hadc1);
-	  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, potVal/41);
-
-	  update_display(1, 0, 0);
-
-
-	    real_time = get_time();
-	      temp = real_time.Hours;
-	      update_display((char)((temp / 10) + 48), 1, 0);
-	      update_display((char)((temp % 10) + 48), 1, 0);
-	      update_display(':', 1, 0);
-	      temp = real_time.Minutes;
-	      update_display((char)((temp / 10) + 48), 1, 0);
-	      update_display((char)((temp % 10) + 48), 1, 0);
-	      update_display(':', 1, 0);
-	      temp = real_time.Seconds;
-	      update_display((char)((temp / 10) + 48), 1, 0);
-	      update_display((char)((temp % 10) + 48), 1, 0);
-	      HAL_Delay(100);
+	  pwm_brightness(&hadc1);
+	  update_time();
   }
   /* USER CODE END 3 */
 }
@@ -250,35 +187,6 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void set_time() {
-	RTC_TimeTypeDef sTime;
-	RTC_DateTypeDef sDate;
-
-	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-	sTime.Hours = receiveUART();
-	sTime.Minutes = receiveUART();
-	sTime.Seconds = receiveUART();
-
-
-	HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-
-}
-
-
-
-uint8_t receiveUART() {
-	uint8_t uart = 0;
-
-	if (HAL_UART_Receive(&huart5, &uart, 1, HAL_MAX_DELAY) != HAL_OK) {
-		Error_Handler();
-	}
-	else{
-		return uart;
-	}
-
-}
-
 /* USER CODE END 4 */
 
 /**
@@ -289,7 +197,6 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-	int fucked = 1;
   /* USER CODE END Error_Handler_Debug */
 }
 

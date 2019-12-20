@@ -9,6 +9,8 @@
 
 void test_disp(){
 
+	clear_display();
+
 	update_display('2', 1, 0);
 	update_display('3', 1, 0);
 	update_display(':', 1, 0);
@@ -18,6 +20,5 @@ void test_disp(){
 }
 
 void test_brightness(){
-
-	pwm_bright(30);
+	pwm_brightness();
 }

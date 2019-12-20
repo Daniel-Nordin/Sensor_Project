@@ -1,4 +1,4 @@
-/*
+/**
  * Display.c
  *
  *  Created on: 9 Dec 2019
@@ -6,7 +6,19 @@
  */
 
 #include <Display.h>
-
+/**
+ * @breif Clears the display
+ * @param none
+ * @retval none
+ */
+void clear_display(){
+	update_display(1, 0, 0);
+}
+/**
+ * @breif Writes to the display
+ * @param char data to be sent and rs/rw settings
+ * @retval none
+ */
 void update_display(uint8_t data, uint8_t rs, uint8_t rw){
 
 	uint8_t transmit_data[3];
@@ -23,20 +35,11 @@ void update_display(uint8_t data, uint8_t rs, uint8_t rw){
 	HAL_SPI_Transmit(&hspi2, transmit_data, 3, HAL_MAX_DELAY);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 }
-
-void pwm_bright(uint16_t brightness){
-	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
-	TIM_OC_InitTypeDef sConfigOC;
-
-    sConfigOC.OCMode = TIM_OCMODE_PWM1;
-    sConfigOC.Pulse = brightness;
-    sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-    sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-    HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2);
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-
-}
-
+/**
+ * @breif Initializes the display so that it can be used
+ * @param none
+ * @retval none
+ */
 void Display_init(){
 	HAL_Delay(10);
 	HAL_GPIO_WritePin(Disp_Reset_GPIO_Port, Disp_Reset_Pin, GPIO_PIN_RESET);
@@ -59,4 +62,17 @@ void Display_init(){
 	HAL_SPI_Transmit(&hspi2, power_icon_power, 3, 100);
 	HAL_SPI_Transmit(&hspi2, follower_ctrl, 3, 100);
 	HAL_SPI_Transmit(&hspi2, on_off, 3, 100);
+}
+/**
+ * @breif Updates the screen brightness by polling the analog input and adjusting the pwm duty cycle
+ * @param none
+ * @retval none
+ */
+void pwm_brightness(){
+	uint32_t potVal = 0;
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 100);
+	potVal = HAL_ADC_GetValue(&hadc1);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, potVal/41);
 }

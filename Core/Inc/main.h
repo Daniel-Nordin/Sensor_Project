@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <Display.h>
+#include <Time.h>
 #include <test_display.h>
 #include <stm32l4xx_hal_spi.h>
 /* USER CODE END Includes */
